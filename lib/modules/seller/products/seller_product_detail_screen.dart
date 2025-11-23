@@ -151,8 +151,7 @@ class SellerProductDetailScreen extends StatelessWidget {
           SizedBox(height: 12),
           Row(
             children: [
-      git remote add origin https://github.com/safalyareddy/Vendora.git
-        Text(
+              Text(
                 "₹${product.price.toStringAsFixed(0)}",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
               ),
