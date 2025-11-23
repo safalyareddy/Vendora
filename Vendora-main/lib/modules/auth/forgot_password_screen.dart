@@ -1,9 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../services/auth_service.dart';
-import '../../app/app_routes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -19,7 +17,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthService>(context, listen: false);
+    // AuthService is available via Provider if needed elsewhere.
+    // We use FirebaseAuth directly for the built-in password reset email.
+    // final auth = Provider.of<AuthService>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Forgot password')),
@@ -28,7 +28,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const Text('Enter the email of your account. We will send a reset link.'),
+              const Text(
+                'Enter the email of your account. We will send a reset link.',
+              ),
               const SizedBox(height: 16),
 
               Form(
@@ -38,7 +40,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email_outlined),
                   ),
-                  validator: (v) => v != null && v.contains('@') ? null : 'Enter valid email',
+                  validator: (v) =>
+                      v != null && v.contains('@') ? null : 'Enter valid email',
                   onSaved: (v) => email = v?.trim() ?? '',
                 ),
               ),
@@ -55,20 +58,47 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         setState(() => _loading = true);
 
                         try {
-                          // Use OTP-backed flow: navigate to request OTP screen.
-                          await auth.requestPasswordResetOtp(email);
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('OTP request submitted. Check your email.')),
+                          // Use Firebase's built-in password reset email.
+                          await FirebaseAuth.instance.sendPasswordResetEmail(
+                            email: email,
                           );
-                          Navigator.pushReplacementNamed(context, '${AppRoutes.forgotPassword}/requestOtp');
+                          if (!mounted) {
+                            return;
+                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Password reset email sent! Check your inbox.',
+                              ),
+                            ),
+                          );
+                          // Optionally navigate back to login
+                          Navigator.pop(context);
+                        } on FirebaseAuthException catch (e) {
+                          if (!mounted) {
+                            return;
+                          }
+                          String msg = 'Failed to send reset email';
+                          if (e.code == 'user-not-found') {
+                            msg = 'No user found with this email';
+                          }
+                          if (e.code == 'invalid-email') {
+                            msg = 'Invalid email address';
+                          }
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text(msg)));
                         } catch (e) {
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Failed to send reset email: $e')),
-                          );
+                          if (!mounted) {
+                            return;
+                          }
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text('Error: $e')));
                         } finally {
-                          if (mounted) setState(() => _loading = false);
+                          if (mounted) {
+                            setState(() => _loading = false);
+                          }
                         }
                       },
                       child: const Text('Send reset email'),

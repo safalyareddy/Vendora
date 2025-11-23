@@ -28,7 +28,9 @@ class _RequestOtpScreenState extends State<RequestOtpScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const Text('Enter your registered email. You will receive an OTP by email.'),
+              const Text(
+                'Enter your registered email. You will receive an OTP by email.',
+              ),
               const SizedBox(height: 16),
               Form(
                 key: _formKey,
@@ -37,7 +39,8 @@ class _RequestOtpScreenState extends State<RequestOtpScreen> {
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email_outlined),
                   ),
-                  validator: (v) => v != null && v.contains('@') ? null : 'Enter valid email',
+                  validator: (v) =>
+                      v != null && v.contains('@') ? null : 'Enter valid email',
                   onSaved: (v) => email = v?.trim() ?? '',
                 ),
               ),
@@ -53,22 +56,26 @@ class _RequestOtpScreenState extends State<RequestOtpScreen> {
                         setState(() => _loading = true);
 
                         try {
-                          // For OTP flow we will write a request doc to Firestore and a Cloud Function will
-                          // send the email. AuthService exposes a helper that uses sendPasswordResetEmail by default.
-                          // We'll call a helper that creates a password-reset request record; if Cloud Functions are
-                          // deployed they'll handle sending OTP. If not, fallback to Firebase reset link.
-                          await auth.requestPasswordResetOtp(email);
+                          // Use Firebase's built-in password reset email for simplicity.
+                          await auth.sendPasswordResetEmail(email);
 
                           if (!mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('OTP requested. Check your email.')),
+                            const SnackBar(
+                              content: Text('Password reset email sent. Check your inbox.'),
+                            ),
                           );
 
-                          Navigator.pushReplacementNamed(context, AppRoutes.forgotEnterOtp);
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppRoutes.login,
+                          );
                         } catch (e) {
                           if (!mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Failed to request OTP: $e')),
+                            SnackBar(
+                              content: Text('Failed to request OTP: $e'),
+                            ),
                           );
                         } finally {
                           if (mounted) setState(() => _loading = false);

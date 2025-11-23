@@ -20,7 +20,10 @@ class FirebaseSetupRequiredScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               if (error.isNotEmpty) ...[
-                const Text('Error (for debugging):', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  'Error (for debugging):',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 6),
                 Text(error),
                 const SizedBox(height: 12),
@@ -30,7 +33,9 @@ class FirebaseSetupRequiredScreen extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              const Text('1) Recommended: Generate firebase_options.dart with FlutterFire CLI'),
+              const Text(
+                '1) Recommended: Generate firebase_options.dart with FlutterFire CLI',
+              ),
               const SizedBox(height: 6),
               const SelectableText(
                 '  - Install FlutterFire CLI: dart pub global activate flutterfire_cli\n  - Run: flutterfire configure\n  - Follow prompts and select your Firebase project and platforms\n  - This will generate lib/firebase_options.dart for you',
@@ -42,7 +47,9 @@ class FirebaseSetupRequiredScreen extends StatelessWidget {
                 '  - Android: place google-services.json into android/app/\n  - iOS: place GoogleService-Info.plist into ios/Runner/\n  - Web: add Firebase config to index.html or use flutterfire configure',
               ),
               const SizedBox(height: 12),
-              const Text('3) Deploy Cloud Functions for OTP/email (optional but required for email OTP flow)'),
+              const Text(
+                '3) Deploy Cloud Functions for OTP/email (optional but required for email OTP flow)',
+              ),
               const SizedBox(height: 6),
               const SelectableText(
                 '  - In project root: cd functions; npm install; cd ..; firebase deploy --only functions\n  - Set SendGrid API key before deploy: firebase functions:config:set sendgrid.key="YOUR_SENDGRID_KEY"',
@@ -50,10 +57,7 @@ class FirebaseSetupRequiredScreen extends StatelessWidget {
               const SizedBox(height: 20),
               const Text('After performing the above, restart the app.'),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text('Close'),
-              ),
+              ElevatedButton(onPressed: () {}, child: const Text('Close')),
             ],
           ),
         ),

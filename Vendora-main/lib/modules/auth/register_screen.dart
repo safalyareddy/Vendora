@@ -200,7 +200,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   if (!mounted) return;
                                   setState(() => _loading = false);
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Registration failed: $e")),
+                                    SnackBar(
+                                      content: Text("Registration failed: $e"),
+                                    ),
                                   );
                                 }
                               },

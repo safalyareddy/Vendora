@@ -1,8 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../services/auth_service.dart';
+// No provider/auth imports required for this simplified informational screen.
 import '../../app/app_routes.dart';
 
 class ResetWithOtpScreen extends StatefulWidget {
@@ -21,7 +20,7 @@ class _ResetWithOtpScreenState extends State<ResetWithOtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthService>(context, listen: false);
+    // AuthService not needed on this screen anymore.
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reset password (enter OTP)')),
@@ -30,36 +29,20 @@ class _ResetWithOtpScreenState extends State<ResetWithOtpScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const Text('Enter the OTP you received and choose a new password.'),
+              const Text(
+                'Enter the OTP you received and choose a new password.',
+              ),
               const SizedBox(height: 16),
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email_outlined),
+                    // OTP flow removed. Use the password-reset email sent from the "Forgot password" screen.
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        'This app uses Firebase password-reset links. Please request a reset from the previous screen and follow the link in your email to change your password.',
                       ),
-                      validator: (v) => v != null && v.contains('@') ? null : 'Enter valid email',
-                      onSaved: (v) => email = v?.trim() ?? '',
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    TextFormField(
-                      decoration: const InputDecoration(labelText: 'OTP'),
-                      onSaved: (v) => otp = v?.trim() ?? '',
-                      validator: (v) => (v?.isNotEmpty ?? false) ? null : 'Enter OTP',
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    TextFormField(
-                      decoration: const InputDecoration(labelText: 'New password'),
-                      obscureText: true,
-                      onSaved: (v) => newPassword = v ?? '',
-                      validator: (v) => (v?.length ?? 0) >= 6 ? null : 'Min 6 chars',
                     ),
                   ],
                 ),
@@ -71,30 +54,16 @@ class _ResetWithOtpScreenState extends State<ResetWithOtpScreen> {
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: () async {
-                        if (!_formKey.currentState!.validate()) return;
-                        _formKey.currentState!.save();
-
-                        setState(() => _loading = true);
-
-                        try {
-                          await auth.verifyOtpAndResetPassword(email: email, otp: otp, newPassword: newPassword);
-
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Password reset successful. Please login.')),
-                          );
-
-                          Navigator.pushReplacementNamed(context, AppRoutes.login);
-                        } catch (e) {
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Failed to reset password: $e')),
-                          );
-                        } finally {
-                          if (mounted) setState(() => _loading = false);
-                        }
+                        // OTP flow removed; instruct user to use the email link.
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Use the password-reset link sent to your email.'),
+                          ),
+                        );
+                        Navigator.pushReplacementNamed(context, AppRoutes.login);
                       },
-                      child: const Text('Reset password'),
+                      child: const Text('Back to login'),
                     ),
             ],
           ),

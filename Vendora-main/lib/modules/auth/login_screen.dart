@@ -101,7 +101,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               ElevatedButton(
                                 onPressed: () async {
-                                  if (!_formKey.currentState!.validate()) return;
+                                  if (!_formKey.currentState!.validate()) {
+                                    return;
+                                  }
 
                                   _formKey.currentState!.save();
                                   setState(() => _loading = true);
@@ -114,7 +116,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       role: auth.role,
                                     );
 
-                                    if (!mounted) return;
+                                    if (!mounted) {
+                                      return;
+                                    }
 
                                     // Go to Home screen on success
                                     Navigator.pushNamedAndRemoveUntil(
@@ -124,12 +128,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                     );
                                   } catch (e) {
                                     if (mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text("Login failed: $e")),
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text("Login failed: $e"),
+                                        ),
                                       );
                                     }
                                   } finally {
-                                    if (mounted) setState(() => _loading = false);
+                                    if (mounted) {
+                                      setState(() => _loading = false);
+                                    }
                                   }
                                 },
                                 child: const Text('Login'),
@@ -139,13 +149,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               TextButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context, AppRoutes.forgotPassword);
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.forgotPassword,
+                                  );
                                 },
                                 child: const Text('Forgot password?'),
                               ),
                             ],
                           ),
-
                   ],
                 ),
               ),

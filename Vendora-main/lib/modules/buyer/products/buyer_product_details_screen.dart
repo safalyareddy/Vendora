@@ -13,7 +13,8 @@ class BuyerProductDetailsScreen extends StatefulWidget {
   const BuyerProductDetailsScreen({super.key, required this.product});
 
   @override
-  State<BuyerProductDetailsScreen> createState() => _BuyerProductDetailsScreenState();
+  State<BuyerProductDetailsScreen> createState() =>
+      _BuyerProductDetailsScreenState();
 }
 
 class _BuyerProductDetailsScreenState extends State<BuyerProductDetailsScreen> {
@@ -265,7 +266,8 @@ class _BuyerProductDetailsScreenState extends State<BuyerProductDetailsScreen> {
 
                             if (added != true) return;
 
-                            final qty = int.tryParse(qtyCtrl.text) ?? product.moq;
+                            final qty =
+                                int.tryParse(qtyCtrl.text) ?? product.moq;
 
                             if (!mounted) return;
                             // Navigate to order placement screen to continue checkout for this item
@@ -335,26 +337,35 @@ class _BuyerProductDetailsScreenState extends State<BuyerProductDetailsScreen> {
                                 ),
                                 actions: [
                                   TextButton(
-                                    onPressed: () => Navigator.pop(dialogContext),
+                                    onPressed: () =>
+                                        Navigator.pop(dialogContext),
                                     child: const Text('Cancel'),
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
-                                      final qty = int.tryParse(qtyCtrl.text) ?? product.moq;
-                                      final price = double.tryParse(priceCtrl.text) ?? product.price;
-                                      final svc = Provider.of<NegotiationService>(
-                                        dialogContext,
-                                        listen: false,
-                                      );
-                                      final id = 'n\$${Random().nextInt(1 << 30)}';
+                                      final qty =
+                                          int.tryParse(qtyCtrl.text) ??
+                                          product.moq;
+                                      final price =
+                                          double.tryParse(priceCtrl.text) ??
+                                          product.price;
+                                      final svc =
+                                          Provider.of<NegotiationService>(
+                                            dialogContext,
+                                            listen: false,
+                                          );
+                                      final id =
+                                          'n\$${Random().nextInt(1 << 30)}';
                                       svc.addRequest(
                                         NegotiationRequest(
                                           id: id,
                                           productId: product.id,
-                                          buyerId: Provider.of<AuthService>(
-                                            dialogContext,
-                                            listen: false,
-                                          ).userId ?? 'buyer_demo',
+                                          buyerId:
+                                              Provider.of<AuthService>(
+                                                dialogContext,
+                                                listen: false,
+                                              ).userId ??
+                                              'buyer_demo',
                                           qty: qty,
                                           offeredPrice: price,
                                           message: 'Buyer offer',
